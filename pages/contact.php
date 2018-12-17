@@ -1,0 +1,1 @@
+Sie finden uns in der Pizzastraße 1b in Gießen/Langgöns. Reservierungen und Bestellungen können Sie gern unter der Telefonnummer 01213/98732165 abschließen. Möchten Sie eine Party feiern? Unser Team berät Sie gern - sprechen Sie uns einfach an.
