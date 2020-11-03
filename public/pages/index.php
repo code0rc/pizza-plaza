@@ -41,7 +41,7 @@
 </div>
 
 <script src="/dist/jquery/jquery.min.js"></script>
-<script src="/dist/popper/popper.min.js"></script>
+<script src="/dist/popper/umd/popper.min.js"></script>
 <script src="/dist/bootstrap/js/bootstrap.min.js"></script>
 <script src="/assets/js/main.js"></script>
 </body>
