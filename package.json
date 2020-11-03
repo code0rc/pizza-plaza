@@ -2,9 +2,9 @@
   "name": "php_tutorial_base",
   "version": "1.0.0",
   "description": "",
-  "main": "index.php",
+  "main": "public/index.php",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "init": "gulp"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,8 @@
     "bootstrap": "^4.1.1",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.3"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2"
   }
 }

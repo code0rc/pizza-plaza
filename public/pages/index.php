@@ -6,8 +6,8 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Pizza Plaza</title>
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="/dist/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
 </head>
 <body>
 
@@ -40,9 +40,9 @@
     <?php include $currentSite . '.php'; ?>
 </div>
 
-<script src="node_modules/jquery/dist/jquery.min.js"></script>
-<script src="node_modules/popper.js/dist/popper.min.js"></script>
-<script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="assets/js/main.js"></script>
+<script src="/dist/jquery/jquery.min.js"></script>
+<script src="/dist/popper/popper.min.js"></script>
+<script src="/dist/bootstrap/js/bootstrap.min.js"></script>
+<script src="/assets/js/main.js"></script>
 </body>
 </html>

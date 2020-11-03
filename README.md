@@ -3,4 +3,4 @@
 
 ## Installation
 
-run `npm install` to load all dependencies.
+Run `npm install` to load all dependencies and then run `npm run init` to copy assets into the public document root. 
