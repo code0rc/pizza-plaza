@@ -42,4 +42,4 @@ if($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['site']) && in_array($_GE
 }
 
 //Load the template.
-include 'pages/index.php';
+include '../pages/index.php';
