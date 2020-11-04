@@ -31,14 +31,24 @@
  */
 
 // Array of all available sites.
-$availableSites = ["main", "about", "imprint", "contact"];
+$availableSites = [
+    "main" => "Startseite",
+    "about" => "Über uns",
+    "imprint" => "Impressum",
+    "contact" => "Kontakt"
+];
 
 // Default site value.
 $currentSite = "main";
+$currentSiteTitle = "";
+
+$requestMethod = filter_input(INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING);
+$paramSite = filter_input(INPUT_GET, 'site', FILTER_SANITIZE_STRING);
 
 // Load requested site-GET parameter
-if($_SERVER['REQUEST_METHOD'] === "GET" && isset($_GET['site']) && in_array($_GET['site'], $availableSites)) {
+if ($requestMethod === "GET" && !empty($paramSite) && !empty($availableSites[$paramSite])) {
     $currentSite = $_GET['site'];
+    $currentSiteTitle = $availableSites[$currentSite];
 }
 
 //Load the template.

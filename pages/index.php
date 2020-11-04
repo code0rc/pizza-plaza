@@ -11,30 +11,46 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="?site=main">Pizza Plaza</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="?site=main">Pizza Plaza</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item <?php if($currentSite === 'main') echo 'active'; ?>">
-                <a class="nav-link" href="?site=main">Startseite</a>
-            </li>
-            <li class="nav-item <?php if($currentSite === 'about') echo 'active'; ?>">
-                <a class="nav-link" href="?site=about">&Uuml;ber uns</a>
-            </li>
-            <li class="nav-item <?php if($currentSite === 'contact') echo 'active'; ?>">
-                <a class="nav-link" href="?site=contact">Kontakt</a>
-            </li>
-            <li class="nav-item <?php if($currentSite === 'imprint') echo 'active'; ?>">
-                <a class="nav-link" href="?site=imprint">Impressum</a>
-            </li>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item <?php if ($currentSite === 'main') echo 'active'; ?>">
+                    <a class="nav-link" href="?site=main">Startseite</a>
+                </li>
+                <li class="nav-item <?php if ($currentSite === 'about') echo 'active'; ?>">
+                    <a class="nav-link" href="?site=about">&Uuml;ber uns</a>
+                </li>
+                <li class="nav-item <?php if ($currentSite === 'contact') echo 'active'; ?>">
+                    <a class="nav-link" href="?site=contact">Kontakt</a>
+                </li>
+                <li class="nav-item <?php if ($currentSite === 'imprint') echo 'active'; ?>">
+                    <a class="nav-link" href="?site=imprint">Impressum</a>
+                </li>
 
-        </ul>
+            </ul>
+        </div>
     </div>
 </nav>
+
+<?php if ($currentSite !== "main") { ?>
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Pizza Plaza</a></li>
+                <li class="breadcrumb-item active"
+                    aria-current="page"><?php echo htmlspecialchars($currentSiteTitle) ?></li>
+            </ol>
+        </nav>
+    </div>
+<?php } ?>
+
 
 <div class="container">
     <?php include $currentSite . '.php'; ?>
