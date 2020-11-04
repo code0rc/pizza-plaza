@@ -22,16 +22,19 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item <?php if ($currentSite === 'main') echo 'active'; ?>">
-                    <a class="nav-link" href="?site=main">Startseite</a>
+                    <a class="nav-link" href="?site=main"><?php echo htmlspecialchars($availableSites['main']) ?></a>
                 </li>
                 <li class="nav-item <?php if ($currentSite === 'about') echo 'active'; ?>">
-                    <a class="nav-link" href="?site=about">&Uuml;ber uns</a>
+                    <a class="nav-link" href="?site=about"><?php echo htmlspecialchars($availableSites['about']) ?></a>
+                </li>
+                <li class="nav-item <?php if ($currentSite === 'order') echo 'active'; ?>">
+                    <a class="nav-link" href="?site=order"><?php echo htmlspecialchars($availableSites['order']) ?></a>
                 </li>
                 <li class="nav-item <?php if ($currentSite === 'contact') echo 'active'; ?>">
-                    <a class="nav-link" href="?site=contact">Kontakt</a>
+                    <a class="nav-link" href="?site=contact"><?php echo htmlspecialchars($availableSites['contact']) ?></a>
                 </li>
                 <li class="nav-item <?php if ($currentSite === 'imprint') echo 'active'; ?>">
-                    <a class="nav-link" href="?site=imprint">Impressum</a>
+                    <a class="nav-link" href="?site=imprint"><?php echo htmlspecialchars($availableSites['imprint']) ?></a>
                 </li>
 
             </ul>

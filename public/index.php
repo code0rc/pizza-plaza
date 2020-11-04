@@ -35,7 +35,8 @@ $availableSites = [
     "main" => "Startseite",
     "about" => "Über uns",
     "imprint" => "Impressum",
-    "contact" => "Kontakt"
+    "contact" => "Kontakt",
+    "order" => "Online-Bestellung"
 ];
 
 // Default site value.
