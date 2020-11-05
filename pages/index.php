@@ -43,7 +43,7 @@
 </nav>
 
 <?php if ($currentSite !== "main") { ?>
-    <div class="container">
+    <div class="container mb-3">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Pizza Plaza</a></li>
