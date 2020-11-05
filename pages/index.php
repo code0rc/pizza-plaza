@@ -59,6 +59,7 @@
     <?php include $currentSite . '.php'; ?>
 </div>
 
+<script src="https://unpkg.com/vue@next"></script>
 <script src="/dist/jquery/jquery.min.js"></script>
 <script src="/dist/popper/umd/popper.min.js"></script>
 <script src="/dist/bootstrap/js/bootstrap.min.js"></script>
