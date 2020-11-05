@@ -1,7 +1,8 @@
 version: "3.8"
 services:
   php:
-    image: php:7.4-fpm
+    build:
+      context: './docker/images/php'
     volumes:
       - ./:/public_html
     networks:
