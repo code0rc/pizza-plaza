@@ -46,6 +46,7 @@ class Article
             return self::$articles;
         }
 
+        $articles = [];
         $query = /** @lang MariaDB */
             <<<SQL
 SELECT p.ID, p.name, p.description, p.price, e.name as extra
@@ -63,8 +64,8 @@ SQL;
 
         foreach ($rows as $row) {
             $id = $row['ID'];
-            if(empty(self::$articles[$id])) {
-                self::$articles[$id] = new static(
+            if(empty($articles[$id])) {
+                $articles[$id] = new static(
                     $row['ID'],
                     $row['name'],
                     $row['price'],
@@ -73,10 +74,11 @@ SQL;
             }
 
             if(!empty($row['extra'])) {
-                self::$articles[$id]->extras[] = $row['extra'];
+                $articles[$id]->extras[] = $row['extra'];
             }
         }
 
+        self::$articles = array_values($articles);
         return self::$articles;
     }
 }
