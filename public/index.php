@@ -30,27 +30,4 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Array of all available sites.
-$availableSites = [
-    "main" => "Startseite",
-    "about" => "Über uns",
-    "imprint" => "Impressum",
-    "contact" => "Kontakt",
-    "order" => "Online-Bestellung"
-];
-
-// Default site value.
-$currentSite = "main";
-$currentSiteTitle = "";
-
-$requestMethod = filter_input(INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_STRING);
-$paramSite = filter_input(INPUT_GET, 'site', FILTER_SANITIZE_STRING);
-
-// Load requested site-GET parameter
-if ($requestMethod === "GET" && !empty($paramSite) && !empty($availableSites[$paramSite])) {
-    $currentSite = $_GET['site'];
-    $currentSiteTitle = $availableSites[$currentSite];
-}
-
-//Load the template.
-include '../pages/index.php';
+require_once '../index.php';

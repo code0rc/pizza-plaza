@@ -1,0 +1,8 @@
+{
+  "database": {
+    "database":  "pizza_plaza",
+    "hostname": "database",
+    "username": "root",
+    "password":  "root"
+  }
+}
