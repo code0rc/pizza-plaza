@@ -8,39 +8,51 @@ $articlesJson = json_encode($articles);
     <h1>Wählen Sie Ihre Pizzen aus!</h1>
   </div>
 </div>
-<div id="app" v-cloak>
-  <div class="row" v-if="order.length > 0">
-    <div class="col col-12 mt-3">
-      <div class="alert alert-success">
-        <h5>Ihre Bestellung</h5>
-        <p>
-          <span v-for="article in order" class="d-block">{{ article.quantity }} x Pizza {{ article.name }} ({{ article.price.toFixed(2) }} &euro;)</span>
-        </p>
-        <h6><strong>TOTAL:</strong> {{ order.reduce((current, next) => { return current + next.price }, 0).toFixed(2) }} &euro;</h6>
-      </div>
+<div id="app">
+  <div v-if="!initialized" class="d-flex align-content-center justify-content-center p-5">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="sr-only">Loading...</span>
     </div>
   </div>
-  <div class="row">
-    <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch" v-for="article in articles" :key="article.ID">
-      <div class="card my-3 w-100">
-        <div class="card-body">
-          <h5 class="card-title mb-3">
-            Pizza {{ article.name }}
-            <span class="badge badge-pill badge-success float-right">{{ article.price.toFixed(2) }} €</span>
-          </h5>
-          <h6 class="card-subtitle mb-2 text-muted" style="height: 3.2rem;" v-if="!!article.description">
-            {{ article.description }}
-          </h6>
+  <div v-cloak>
+    <div class="row" v-if="order.length > 0">
+      <div class="col col-12 mt-3">
+        <div class="alert alert-success">
+          <h5>Ihre Bestellung</h5>
+          <p>
+            <span v-for="article in order"
+                  class="d-block">{{ article.quantity }} x Pizza {{ article.name }} ({{ article.price.toFixed(2) }} &euro;)</span>
+          </p>
+          <h6><strong>TOTAL:</strong> {{ order.reduce((current, next) => { return current + next.price }, 0).toFixed(2)
+            }} &euro;</h6>
         </div>
-        <div class="card-body">
-          <div class="float-right">
-            <a href="#" class="btn btn-sm btn-primary" v-on:click="addToCart(article.ID)">
-              <strong>+</strong>
-            </a>
+      </div>
+      <div class="col col-12">
+        <a href="#" class="btn btn-outline-primary float-right" v-on:click="clearOrder()">Bestellvorgang abbrechen</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch" v-for="article in articles" :key="article.ID">
+        <div class="card my-3 w-100">
+          <div class="card-body">
+            <h5 class="card-title mb-3">
+              Pizza {{ article.name }}
+              <span class="badge badge-pill badge-success float-right">{{ article.price.toFixed(2) }} €</span>
+            </h5>
+            <h6 class="card-subtitle mb-2 text-muted" style="height: 3.2rem;" v-if="!!article.description">
+              {{ article.description }}
+            </h6>
           </div>
+          <div class="card-body">
+            <div class="float-right">
+              <a class="btn btn-sm btn-primary" v-on:click="addToCart(article.ID)">
+                <strong>+</strong>
+              </a>
+            </div>
+          </div>
+          <div class="card-footer"><h6 class="card-subtitle my-2">Zutaten:</h6>
+            <p class="mb-2" style="height: 3.2em;">{{ article.extras.join(', ') }}</p></div>
         </div>
-        <div class="card-footer"><h6 class="card-subtitle my-2">Zutaten:</h6>
-          <p class="mb-2" style="height: 3.2em;">{{ article.extras.join(', ') }}</p></div>
       </div>
     </div>
   </div>
@@ -96,8 +108,20 @@ $articlesJson = json_encode($articles);
           article.quantity++
           article.price += availableArticle.price
         } else {
-          Array.prototype.push.call(this.order, { id, extras: [], quantity: 1, name: availableArticle.name, price: availableArticle.price })
+          Array.prototype.push.call(this.order, {
+            id,
+            extras: [],
+            quantity: 1,
+            name: availableArticle.name,
+            price: availableArticle.price
+          })
         }
+      },
+      clearOrder () {
+        if (!confirm('Möchten Sie den Bestellvorgang wirklich abbrechen?')) {
+          return
+        }
+        this.order = []
       }
     },
     created () {
