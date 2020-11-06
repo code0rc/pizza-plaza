@@ -1,5 +1,10 @@
 <?php
 
+namespace PizzaPlaza\Components;
+
+use PDO;
+use PizzaPlaza\Utilities\DatabaseConnection;
+
 class Article
 {
     /**
@@ -40,7 +45,7 @@ class Article
         $this->description = $description;
     }
 
-    public static function fetchAll()
+    public static function fetchAll(DatabaseConnection $connection)
     {
         if(!empty(self::$articles)) {
             return self::$articles;
@@ -56,11 +61,13 @@ LEFT JOIN Extras e ON (pe.Extras_ID = e.ID)
 ORDER BY p.name ASC, extra ASC;
 SQL;
 
-        // error handling code intentionally omitted for reasons of time
-        $dbConnection = new PDO('mysql:dbname=pizza_plaza;host=database:3306;charset=utf8mb4', 'root', 'root');
-        $stmt = $dbConnection->prepare($query);
-        $stmt->execute();
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $stmt = $connection->prepare($query);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch(Exception $e) {
+            exit("Could not fetch data from database.");
+        }
 
         foreach ($rows as $row) {
             $id = $row['ID'];

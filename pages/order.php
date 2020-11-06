@@ -1,6 +1,8 @@
 <?php
-require_once('./../components/Article.php');
-$articles = Article::fetchAll();
+
+use PizzaPlaza\Components\Article;
+
+$articles = Article::fetchAll($database);
 $articlesJson = json_encode($articles);
 ?>
 <div class="row">
