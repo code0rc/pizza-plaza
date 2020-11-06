@@ -1,0 +1,17 @@
+{
+  "name": "armin/pizza-plaza",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Armin Linzbauer",
+      "email": "armin.linzbauer@gmail.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "PizzaPlaza\\Components\\": "components/",
+      "PizzaPlaza\\Utilities\\": "utilities/"
+    }
+  }
+}

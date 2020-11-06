@@ -3,3 +3,5 @@ public/dist/
 node_modules/
 .env*
 *.env
+config.json
+/vendor/

@@ -3,7 +3,10 @@
 
 ## Installation
 
-Run `npm install` to load all dependencies and then run `npm run init` to copy assets into the public document root. 
+*Before you cntinue, please make sure you have a recent version of npm and composer installed on your system.*
+
+Run `npm install` to load all dependencies and then run `npm run init` to copy assets into the public document root.
+Next, run `composer dump-autoload --optimize`
 
 ## Execution
 
