@@ -48,14 +48,12 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
           Array.prototype.push.call(this.order, {
             id,
             extras: [],
-            quantity: 1,
-            name: availableArticle.name
+            quantity: 1
           })
         }
       },
       fixOrderData (order) {
         order.forEach(article => {
-          let availableArticle = this.articles.find(art => art.ID === article.id)
           if (typeof article.quantity !== 'number') {
             article.quantity = 1
           }
@@ -65,8 +63,6 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
           if (article.quantity < 1) {
             article.quantity = 1
           }
-          article.name = availableArticle.name
-          //article.price = Math.round(availableArticle.price * article.quantity * 100) / 100;
         })
       },
       removeFromCart (index) {
@@ -83,6 +79,9 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         }
         this.order = []
       },
+      getArticleName(id) {
+        return this.articles.find(art => art.ID === id).name
+      },
       getOrderTotal (order) {
         return Math.round(order.reduce((current, next) => {
           return Math.round((current + this.getOrderItemTotal(next)) * 100) / 100
@@ -94,6 +93,18 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
       getArticlePrice (id) {
         let availableArticle = this.articles.find(art => art.ID === id)
         return Math.round(availableArticle.price * 100) / 100
+      },
+      getExtrasCompoundKey (extras) {
+        return extras.sort().join(',')
+      },
+      indexOfIdenticalOrderItem (order, orderItem) {
+        let index = -1
+        order.forEach((item, idx) => {
+          if (item.id === orderItem.id && this.getExtrasCompoundKey(orderItem.extras) === this.getExtrasCompoundKey(item.extras)) {
+            index = idx
+          }
+        })
+        return index;
       }
     },
     created () {

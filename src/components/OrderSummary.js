@@ -5,9 +5,9 @@ const OrderSummary = {
       <div class="alert alert-success">
         <h5>Ihre Bestellung</h5>
         <OrderSummaryList :articles="order"
-                          v-slot:default="{article: {id, name, quantity, price}, index}"
+                          v-slot:default="{article: {id, quantity, price}, index}"
                           @delete="$emit('delete', $event)">
-          <OrderSummaryListItem :name="name" :quantity="quantity"
+          <OrderSummaryListItem :name="$root.getArticleName(id)" :quantity="quantity"
                                 :price="$root.getOrderItemTotal({id, quantity})"
                                 @set_quantity="$emit('set_quantity', {quantity: $event, index})"
                                 @delete="$emit('delete', index)"/>
