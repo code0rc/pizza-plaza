@@ -7,7 +7,9 @@
       "email": "armin.linzbauer@gmail.com"
     }
   ],
-  "require": {},
+  "require": {
+    "ext-pdo": "*"
+  },
   "autoload": {
     "psr-4": {
       "PizzaPlaza\\Components\\": "components/",

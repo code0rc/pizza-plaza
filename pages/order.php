@@ -1,9 +1,17 @@
 <?php
 
 use PizzaPlaza\Components\Article;
+use PizzaPlaza\Components\Extra;
 
 $articles = Article::fetchAll($database);
-$articlesJson = base64_encode(json_encode($articles));
+$extras = Extra::fetchAll($database);
+$data = (object)[
+    'payload' => (object)[
+        'articles' => $articles,
+        'extras' => $extras
+    ]
+];
+$json = base64_encode(json_encode($data));
 ?>
 <div class="row">
   <div class="col-12">
@@ -17,7 +25,7 @@ $articlesJson = base64_encode(json_encode($articles));
     </div>
   </div>
   <div v-cloak>
-    <order-summary :order="order" v-on:clear_order="clearOrder()"></order-summary>
+    <order-summary :order="order" v-on:clear_order="clearOrder()" v-on:delete="removeFromCart($event)" v-on:set_quantity="setCartQuantity($event)"></order-summary>
     <article-tile-list :articles="articles" v-slot:default="{ID, name, description, price, extras}">
       <article-tile :id="ID" :name="name"
                     :description="description"
@@ -28,4 +36,4 @@ $articlesJson = base64_encode(json_encode($articles));
 </div>
 <script src="https://unpkg.com/vue@3.0.2/dist/vue.global.js"></script>
 <script src="/assets/js/vue-app.js"
-        onload="initViewOrder(JSON.parse(atob('<?php echo $articlesJson ?>')), Vue)"></script>
+        onload="initAppOrder(JSON.parse(atob('<?php echo $json ?>')), Vue)"></script>

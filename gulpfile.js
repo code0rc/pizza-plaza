@@ -26,7 +26,7 @@ async function bundleScripts () {
     './src/components/OrderSummaryListItem.js',
     './src/components/OrderSummaryList.js',
     './src/components/OrderSummary.js',
-    './src/ViewOrder.js',
+    './src/AppOrder.js',
   ])
     .pipe(concat('vue-app.js'))
     .pipe(babel({ presets: ['@babel/env'] }))

@@ -1,4 +1,4 @@
-const initViewOrder = (articles, Vue) => {
+const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
   const LOCAL_STORAGE_ORDER_KEY = 'pizza_plaza_order'
   Vue.createApp({
     components: { ArticleTile, ArticleTileList, OrderSummary },
@@ -6,6 +6,7 @@ const initViewOrder = (articles, Vue) => {
       return {
         initialized: false,
         articles: articles,
+        extras: extras,
         order: []
       }
     },
@@ -24,11 +25,7 @@ const initViewOrder = (articles, Vue) => {
         if (orderJson != null) {
           let possibleArticles = this.articles.map(art => art.ID)
           let order = JSON.parse(orderJson).filter(art => possibleArticles.indexOf(art.id) > -1)
-          order.forEach(article => {
-            let availableArticle = this.articles.find(art => art.ID === article.id)
-            article.name = availableArticle.name
-            article.price = availableArticle.price * article.quantity
-          })
+          this.fixOrderData(order)
           this.order = order
           this.commitOrderToLocalStorage()
         }
@@ -57,6 +54,30 @@ const initViewOrder = (articles, Vue) => {
             price: availableArticle.price
           })
         }
+      },
+      fixOrderData (order) {
+        order.forEach(article => {
+          let availableArticle = this.articles.find(art => art.ID === article.id)
+          if(typeof article.quantity !== 'number') {
+            article.quantity = 1;
+          }
+          if(article.quantity > 20) {
+            article.quantity = 20;
+          }
+          if(article.quantity < 1) {
+            article.quantity = 1;
+          }
+          article.name = availableArticle.name
+          article.price = Math.round(availableArticle.price * article.quantity * 100) / 100;
+        })
+      },
+      removeFromCart (index) {
+        console.log(index)
+        this.order.splice(index, 1)
+      },
+      setCartQuantity ({ index, quantity }) {
+        this.order[index].quantity = quantity
+        this.fixOrderData(this.order)
       },
       clearOrder () {
         if (!confirm('Möchten Sie den Bestellvorgang wirklich abbrechen?')) {
