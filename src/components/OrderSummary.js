@@ -5,11 +5,12 @@ const OrderSummary = {
       <div class="alert alert-success">
         <h5>Ihre Bestellung</h5>
         <OrderSummaryList :articles="order"
-                          v-slot:default="{article: {id, quantity, price}, index}"
+                          v-slot:default="{article: {id, quantity, price, extras}, index}"
                           @delete="$emit('delete', $event)">
           <OrderSummaryListItem :name="$root.getArticleName(id)" :quantity="quantity"
-                                :price="$root.getOrderItemTotal({id, quantity})"
+                                :price="$root.getOrderItemTotal({id, quantity, extras})" :extras="extras"
                                 @set_quantity="$emit('set_quantity', {quantity: $event, index})"
+                                @update_extras="$emit('update_extras', {index, extras: $event})"
                                 @delete="$emit('delete', index)"/>
         </OrderSummaryList>
         <div>
@@ -28,7 +29,7 @@ const OrderSummary = {
   `,
   components: { OrderSummaryList, OrderSummaryListItem },
 
-  emits: ['delete', 'set_quantity'],
+  emits: ['delete', 'set_quantity', 'update_extras'],
   props: {
     order: {
       type: Array,

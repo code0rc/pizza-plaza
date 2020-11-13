@@ -21,6 +21,8 @@ async function copyPopper () {
 
 async function bundleScripts () {
   return gulp.src([
+    './src/components/ArticleTileExtrasItem.js',
+    './src/components/ArticleTileExtras.js',
     './src/components/ArticleTileList.js',
     './src/components/ArticleTile.js',
     './src/components/OrderSummaryListItem.js',

@@ -25,7 +25,9 @@ $json = base64_encode(json_encode($data));
     </div>
   </div>
   <div v-cloak>
-    <order-summary :order="order" v-on:clear_order="clearOrder()" v-on:delete="removeFromCart($event)" v-on:set_quantity="setCartQuantity($event)"></order-summary>
+    <order-summary :order="order" v-on:clear_order="clearOrder()" v-on:delete="removeFromCart($event)"
+                   v-on:set_quantity="setCartQuantity($event)"
+                   v-on:update_extras="updateExtras($event)"></order-summary>
     <article-tile-list :articles="articles" v-slot:default="{ID, name, description, price, extras}">
       <article-tile :id="ID" :name="name"
                     :description="description"

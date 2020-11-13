@@ -35,19 +35,25 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         window.localStorage.setItem(LOCAL_STORAGE_ORDER_KEY, JSON.stringify(this.order))
         window.dispatchEvent(new Event('vue.order.updated'))
       },
-      addToCart (id) {
+      addToCart ({ id, extras }) {
+        console.log({ extras })
         let availableArticle = this.articles.find(art => art.ID === id)
         if (!availableArticle) {
           return
         }
 
-        let article = Array.prototype.find.call(this.order, item => item.id === id)
+        const filterSameArticle = (item) => {
+          return item.id === id && this.sameExtras(item.extras, extras)
+        }
+        let article = Array.prototype.find.call(this.order, filterSameArticle)
         if (!!article) {
-          article.quantity++
+          if(article.quantity < 20) {
+            article.quantity++
+          }
         } else {
           Array.prototype.push.call(this.order, {
             id,
-            extras: [],
+            extras: extras,
             quantity: 1
           })
         }
@@ -79,7 +85,7 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         }
         this.order = []
       },
-      getArticleName(id) {
+      getArticleName (id) {
         return this.articles.find(art => art.ID === id).name
       },
       getOrderTotal (order) {
@@ -87,8 +93,13 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
           return Math.round((current + this.getOrderItemTotal(next)) * 100) / 100
         }, 0) * 100) / 100
       },
-      getOrderItemTotal ({ id, quantity }) {
-        return Math.round(this.getArticlePrice(id) * quantity * 100) / 100
+      getOrderItemTotal ({ id, quantity, extras }) {
+        const mappedExtras = this.mapExtras(extras)
+        const extraTotalPrice = mappedExtras.reduce((current, next) => {
+          return current + (next.price * quantity)
+        }, 0)
+        const total = (this.getArticlePrice(id) * quantity) + extraTotalPrice
+        return Math.round(total * 100) / 100
       },
       getArticlePrice (id) {
         let availableArticle = this.articles.find(art => art.ID === id)
@@ -100,11 +111,31 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
       indexOfIdenticalOrderItem (order, orderItem) {
         let index = -1
         order.forEach((item, idx) => {
-          if (item.id === orderItem.id && this.getExtrasCompoundKey(orderItem.extras) === this.getExtrasCompoundKey(item.extras)) {
+          if (item.id === orderItem.id && this.sameExtras(item.extras, orderItem.extras)) {
             index = idx
           }
         })
-        return index;
+        return index
+      },
+      sameExtras (extras1, extras2) {
+        return this.getExtrasCompoundKey(extras1) === this.getExtrasCompoundKey(extras2)
+      },
+      mapExtras (extraIds) {
+        return extraIds.map((id) => {
+          return this.extras.find((extra) => extra.ID === id)
+        }).filter((itm) => { return !!itm }).sort((a, b) => {
+          return String(a.name).localeCompare(String(b.name))
+        })
+      },
+      updateExtras ({ index, extras }) {
+        const newOrder = { id: this.order[index].id, extras }
+
+        this.addToCart(newOrder)
+        if (this.order[index].quantity === 1) {
+          this.removeFromCart(index)
+        } else {
+          this.setCartQuantity({ index, quantity: this.order[index].quantity - 1 })
+        }
       }
     },
     created () {
