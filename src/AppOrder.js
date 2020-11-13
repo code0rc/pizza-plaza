@@ -44,31 +44,29 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         let article = Array.prototype.find.call(this.order, item => item.id === id)
         if (!!article) {
           article.quantity++
-          article.price += availableArticle.price
         } else {
           Array.prototype.push.call(this.order, {
             id,
             extras: [],
             quantity: 1,
-            name: availableArticle.name,
-            price: availableArticle.price
+            name: availableArticle.name
           })
         }
       },
       fixOrderData (order) {
         order.forEach(article => {
           let availableArticle = this.articles.find(art => art.ID === article.id)
-          if(typeof article.quantity !== 'number') {
-            article.quantity = 1;
+          if (typeof article.quantity !== 'number') {
+            article.quantity = 1
           }
-          if(article.quantity > 20) {
-            article.quantity = 20;
+          if (article.quantity > 20) {
+            article.quantity = 20
           }
-          if(article.quantity < 1) {
-            article.quantity = 1;
+          if (article.quantity < 1) {
+            article.quantity = 1
           }
           article.name = availableArticle.name
-          article.price = Math.round(availableArticle.price * article.quantity * 100) / 100;
+          //article.price = Math.round(availableArticle.price * article.quantity * 100) / 100;
         })
       },
       removeFromCart (index) {
@@ -84,6 +82,18 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
           return
         }
         this.order = []
+      },
+      getOrderTotal (order) {
+        return Math.round(order.reduce((current, next) => {
+          return Math.round((current + this.getOrderItemTotal(next)) * 100) / 100
+        }, 0) * 100) / 100
+      },
+      getOrderItemTotal ({ id, quantity }) {
+        return Math.round(this.getArticlePrice(id) * quantity * 100) / 100
+      },
+      getArticlePrice (id) {
+        let availableArticle = this.articles.find(art => art.ID === id)
+        return Math.round(availableArticle.price * 100) / 100
       }
     },
     created () {

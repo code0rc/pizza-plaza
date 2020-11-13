@@ -5,16 +5,16 @@ const OrderSummary = {
       <div class="alert alert-success">
         <h5>Ihre Bestellung</h5>
         <OrderSummaryList :articles="order"
-                          v-slot:default="{article: {name, quantity, price}, index}"
+                          v-slot:default="{article: {id, name, quantity, price}, index}"
                           @delete="$emit('delete', $event)">
           <OrderSummaryListItem :name="name" :quantity="quantity"
-                                :price="price"
+                                :price="$root.getOrderItemTotal({id, quantity})"
                                 @set_quantity="$emit('set_quantity', {quantity: $event, index})"
                                 @delete="$emit('delete', index)"/>
         </OrderSummaryList>
         <div>
           <h6 class="my-3"><strong>TOTAL:</strong> {{
-              order.reduce((current, next) => { return current + next.price }, 0).toFixed(2)
+              $root.getOrderTotal(order).toFixed(2)
             }} &euro;</h6>
         </div>
       </div>
