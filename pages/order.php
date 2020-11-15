@@ -28,6 +28,15 @@ $json = base64_encode(json_encode($data));
     <order-summary :order="order" v-on:clear_order="clearOrder()" v-on:delete="removeFromCart($event)"
                    v-on:set_quantity="setCartQuantity($event)"
                    v-on:update_extras="updateExtras($event)"></order-summary>
+
+    <div class="row">
+      <div class="col col-12 mb-5" v-if="order.length > 0">
+        <a class="btn btn-primary float-right ml-2" onclick="alert('Coming soon!')">Weiter zum Checkout</a>
+        <a href="#" class="btn btn-outline-danger float-right" v-on:click="clearOrder()">Bestellvorgang
+          abbrechen</a>
+      </div>
+    </div>
+
     <article-tile-list :articles="articles" v-slot:default="{ID, name, description, price, extras}">
       <article-tile :id="ID" :name="name"
                     :description="description"

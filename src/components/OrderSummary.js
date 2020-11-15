@@ -20,11 +20,6 @@ const OrderSummary = {
         </div>
       </div>
     </div>
-    <div class="col col-12 mb-5">
-      <a class="btn btn-primary float-right ml-2" onclick="alert('Coming soon!')">Weiter zum Checkout</a>
-      <a href="#" class="btn btn-outline-danger float-right" v-on:click="$emit('clear_order')">Bestellvorgang
-        abbrechen</a>
-    </div>
     </div>
   `,
   components: { OrderSummaryList, OrderSummaryListItem },
