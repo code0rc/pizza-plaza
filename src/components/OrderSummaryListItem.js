@@ -6,7 +6,7 @@ const OrderSummaryListItem = {
         <input class="form-control form-control-sm d-inline-block"
                type="number" maxlength="2" minlength="1" min="1" max="20" :value="quantity"
                style="width: 4em" autocomplete="off" v-on:input="updateQuantity($event.target.value)"/>
-        <span>&nbsp;&nbsp;Pizza {{ name }} ({{ price.toFixed(2) }} &euro;)</span>
+        <span>&nbsp;&nbsp;Pizza {{ name }} <span class="text-muted">({{ price.toFixed(2) }} &euro;)</span></span>
       </div>
       <div class="pt-2" style="padding-left: 4.1rem;" v-if="mappedExtras.length > 0">
         <h6>Extras</h6>
