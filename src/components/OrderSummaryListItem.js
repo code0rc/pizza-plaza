@@ -11,12 +11,12 @@ const OrderSummaryListItem = {
       <div class="pt-2" style="padding-left: 4.1rem;" v-if="mappedExtras.length > 0">
         <h6>Extras</h6>
         <div v-for="extra in mappedExtras" :key="extra.ID">
-          [<a class="btn btn-sm btn-link text-danger" :title="extra.name + ' Entfernen'" @click="removeExtra(extra.ID)">&#x2715;</a>]&nbsp;
+          [<a href="#" class="btn btn-sm btn-link text-danger" :title="extra.name + ' Entfernen'" @click="removeExtra(extra.ID)">&#x2715;</a>]&nbsp;
           {{ extra.name }} <span class="text-muted">({{ extraTotalPrice(extra.price).toFixed(2) }} &euro;)</span>
         </div>
       </div>
     </div>
-    <a class="btn btn-sm btn-outline-danger ml-auto" :title="'Pizza ' + name + ' Entfernen'" @click="deleteOrderItem()">&#x2715;</a>
+    <a href="#" class="btn btn-sm btn-outline-danger ml-auto" :title="'Pizza ' + name + ' Entfernen'" @click="deleteOrderItem()">&#x2715;</a>
     </div>
   `,
   emits: ['delete', 'set_quantity', 'update_extras'],

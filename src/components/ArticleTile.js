@@ -21,7 +21,7 @@ const ArticleTile = {
     </div>
     <div class="card-body pt-0">
       <div class="float-right">
-        <a class="btn btn-sm btn-primary" v-on:click="addToCart()">
+        <a class="btn btn-sm btn-primary" v-on:click="addToCart()" href="#">
           <strong>+</strong>
         </a>
       </div>
