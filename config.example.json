@@ -4,5 +4,9 @@
     "hostname": "database",
     "username": "root",
     "password":  "root"
+  },
+  "backend": {
+    "username": "root",
+    "password": ""
   }
 }
