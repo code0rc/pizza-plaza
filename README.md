@@ -8,6 +8,7 @@ Run `npm install` to load all dependencies and then run `npm run init` to copy a
 Next, run `composer dump-autoload --optimize`
 
 ## Execution
+### Docker Runtime
 *Before continuing, make sure you have Docker installed.*
 
 Run `docker-compose up -d` to start the containerized runtime environment (PHP, MariaDB, NGINX).
@@ -21,6 +22,18 @@ variables set in the `.env` file to modify this behavior.
 the environment variables on your shell or your IDE. Alternatively you can copy the `.env` file into a new `.env.local` 
 file and start the containers using `docker-compose --env-file .env.local up -d`. For this option to work correctly, 
 all environment variables specified in the original `.env` file must be set in the copy as well.
+
+### Configuration
+The web app's configuration is stored locally on a per-project basis. To successfully run the project, you need to 
+create a copy of the `config.example.json` file and rename it to `config.json`. Then enter the correct values for your 
+setup and save the file. Please do **not** commit this file into version control since it contains sensitive 
+information including database credentials among others.
+
+#### Database
+Enter your setup's database credentials under the `database` node.
+
+#### Backend
+Enter your backend username and password under the `backend` node.
 
 ## Development
 ### Vue Components
@@ -36,3 +49,8 @@ every time it detects a change. To start the watcher task, simply execute `npm r
 Since this project doesn't have any deployment target, it would be a waste of resources to pick a deployment tool and 
 set up a pipeline. This makes it necessary to add all compiled assets to version control. **Always run `npm run init` 
 and add all generated assets to Git's staging area before committing your changes.**
+
+## Usage
+### Admin Panel
+To access the admin panel, navigate to `?site=admin` and enter your backend login credentials.
+Make sure you've configured the backend user in the `config.json` file (see section [Configuration](#configuration)).
