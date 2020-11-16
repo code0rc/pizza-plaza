@@ -119,7 +119,7 @@ $json = base64_encode(json_encode($data));
           <div class="form-row">
             <div class="col-12">
               <button class="btn btn-primary float-right" type="submit">
-                Jetzt verbindlich bestellen ({{ getOrderTotal(order) }}&euro;)
+                Jetzt verbindlich bestellen ({{ getOrderTotal(order).toFixed(2) }}&euro;)
               </button>
             </div>
           </div>

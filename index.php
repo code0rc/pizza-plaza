@@ -1,5 +1,8 @@
 <?php
 
+session_start();
+
+use PizzaPlaza\Utilities\BackendSettings;
 use PizzaPlaza\Utilities\DatabaseConnection;
 use PizzaPlaza\Utilities\DatabaseConnectionSettings;
 use PizzaPlaza\Utilities\InvalidConfigFileException;
@@ -41,6 +44,12 @@ try {
     exit("Could not connect to database. Error: " . $e->getMessage());
 }
 
+// Create database connection
+if(!isset($config->backend)) {
+    throw new InvalidConfigFileException("Missing node 'backend' in config file.");
+}
+$backendSettings = BackendSettings::fromStdClass($config->backend);
+
 // Array of all available sites.
 $availableSites = [
     "main" => "Startseite",
@@ -54,8 +63,9 @@ $availableSites = [
     ],
     "checkout-complete" => [
         "name" => "Danke",
-        "parent" => "checkout"
-    ]
+        "parent" => "order"
+    ],
+    "admin" => "Administration"
 ];
 
 $endpoints = [
@@ -70,7 +80,7 @@ $requestMethod = filter_input(INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_ST
 $paramSite = filter_input(INPUT_GET, 'site', FILTER_SANITIZE_STRING);
 
 // Load requested site-GET parameter
-if ($requestMethod === "GET" && !empty($paramSite) && !empty($availableSites[$paramSite])) {
+if (($requestMethod === "GET" || $requestMethod === "POST") && !empty($paramSite) && !empty($availableSites[$paramSite])) {
     $currentSite = $_GET['site'];
     $currentSiteTitle = is_array($availableSites[$currentSite]) ? $availableSites[$currentSite]['name'] : $availableSites[$currentSite];
 } elseif (!empty($paramSite) && in_array($paramSite, $endpoints)) {
@@ -80,5 +90,7 @@ if ($requestMethod === "GET" && !empty($paramSite) && !empty($availableSites[$pa
 
 // Use index file only for non-endpoint routes
 if(empty($paramSite) || !in_array($paramSite, $endpoints)) {
+    ob_start();
     include '../pages/index.php';
+    ob_end_flush();
 }

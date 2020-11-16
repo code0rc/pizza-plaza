@@ -42,8 +42,9 @@
           <a class="nav-link"
              href="?site=imprint"><?php echo htmlspecialchars(get_page_name($availableSites['imprint'])) ?></a>
         </li>
-        <li class="nav-item ml-md-3" v-cloak id="vue_order_summary_widget" v-if="itemsTotal > 0">
-          <a class="nav-link" href="?site=checkout"><strong>&#x1f6d2; {{ itemsTotal }} Artikel ({{ priceTotal }}&euro;)</strong></a>
+        <li class="nav-item ml-md-3" v-cloak id="vue_order_summary_widget">
+          <a v-if="itemsTotal > 0" class="nav-link" href="?site=checkout"><strong>&#x1f6d2; {{ itemsTotal }} Artikel ({{ priceTotal
+              }}&euro;)</strong></a>
         </li>
       </ul>
     </div>
@@ -116,13 +117,19 @@ while ($parentSite) {
       }
     },
     methods: {
-      loadData: function() {
+      loadData: function () {
+        if (window.localStorage.getItem('pizza_plaza_order_summary') == null) {
+          window.localStorage.setItem('pizza_plaza_order_summary', JSON.stringify({
+            priceTotal: 0,
+            itemsTotal: 0
+          }))
+        }
         const data = JSON.parse(window.localStorage.getItem('pizza_plaza_order_summary'))
         this.priceTotal = data.priceTotal
         this.itemsTotal = data.itemsTotal
       }
     },
-    created: function() {
+    created: function () {
       this.loadData()
       window.addEventListener('vue.order.updated', this.loadData)
     }

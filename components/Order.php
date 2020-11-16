@@ -4,6 +4,7 @@
 namespace PizzaPlaza\Components;
 
 
+use PDO;
 use PizzaPlaza\Utilities\DatabaseConnection;
 
 class Order
@@ -44,7 +45,89 @@ class Order
      */
     public static function fetchAll(DatabaseConnection $db, array $articles, array $extras)
     {
+        if (!empty(self::$orders)) {
+            return self::$orders;
+        }
 
+        $query = <<<SQL
+SELECT `o`.`ID` as 'Order_ID', `o`.`timestamp`, `c`.`firstname`, `c`.`lastname`, `c`.`street`, 
+       `c`.`streetnumber`, `c`.`zip`, `c`.`city`, `c`.`phone`, `i`.`ID` as 'OrderItems_ID', `i`.`quantity`,
+       `i`.`Pizzas_ID` as 'Pizzas_ID', GROUP_CONCAT(`e`.`Extras_ID`) as 'Extras'
+FROM `Order` `o`
+JOIN `Customer` `c` ON (`o`.`Customer_ID` = `c`.`ID`)
+JOIN `OrderItems` `i` ON (`i`.`Order_ID` = `o`.`ID`)
+LEFT JOIN `OrderItem_has_Extra` `e` ON (`e`.`OrderItems_ID` = `i`.`ID`)
+GROUP BY `i`.`ID`
+ORDER BY `o`.`timestamp` ASC
+SQL;
+
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $orders = [];
+        foreach ($result as $row) {
+            $orderId = $row['Order_ID'];
+            $orderItemId = $row['OrderItems_ID'];
+
+            if (empty($orders[$orderId])) {
+                $customer = new Customer(trim($row['firstname']), trim($row['lastname']));
+                $customer->street = trim($row['street']);
+                $customer->streetnumber = trim($row['streetnumber']);
+                $customer->zip = trim($row['zip']);
+                $customer->city = trim($row['city']);
+                $customer->phone = trim($row['phone']);
+                $orders[$orderId] = new self($customer, []);
+                $orders[$orderId]->ID = $orderId;
+                $orders[$orderId]->timestamp = $row['timestamp'];
+            }
+
+            if (!empty($articles[$row['Pizzas_ID']])) {
+                $extrasMapped = array_filter(array_map(function ($extraId) use ($extras) {
+                    return !empty($extras[$extraId]) ? $extras[$extraId] : null;
+                }, array_filter(explode(',', $row['Extras']))));
+
+                $orders[$orderId]->orderItems[$orderItemId] = new OrderItem(
+                    $articles[$row['Pizzas_ID']],
+                    $extrasMapped,
+                    $row['quantity']
+                );
+            }
+        }
+
+        self::$orders = $orders;
+        return self::$orders;
+    }
+
+    public static function deleteById(DatabaseConnection $db, int $orderId)
+    {
+        $query = <<<SQL
+DELETE FROM `Customer` 
+WHERE `Customer`.`ID` IN (
+    SELECT `Order`.`customer_ID` 
+    FROM `Order` 
+    WHERE `Order`.`ID` = :orderId
+);
+
+DELETE FROM `OrderItem_has_Extra` 
+WHERE `OrderItem_has_Extra`.`OrderItems_ID` IN (
+    SELECT `OrderItems`.`ID` 
+    FROM `OrderItems` 
+    WHERE `OrderItems`.`Order_ID` = :orderId
+);
+
+DELETE FROM `OrderItems` 
+WHERE `OrderItems`.`Order_ID` = :orderId;
+
+DELETE FROM `Order` 
+WHERE `Order`.`ID` = :orderId;
+SQL;
+
+        $stmt = $db->prepare($query);
+        $stmt->execute([
+            'orderId' => $orderId
+        ]);
+        self::$orders = [];
     }
 
     /**
@@ -142,7 +225,6 @@ SQL;
         foreach ($order->orderItems as $orderItem) {
             self::insertOrderItem($db, $orderItem, $orderId);
         }
-        self::$orders = [];
-        //self::fetchAll($db, [], []);
+        self::$orders = []; // Force refresh on next fetch
     }
 }
