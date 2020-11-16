@@ -45,6 +45,5 @@ $json = base64_encode(json_encode($data));
     </article-tile-list>
   </div>
 </div>
-<script src="https://unpkg.com/vue@3.0.2/dist/vue.global.js"></script>
 <script src="/assets/js/vue-app.js"
         onload="initAppOrder(JSON.parse(atob('<?php echo $json ?>')), Vue)"></script>

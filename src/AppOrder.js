@@ -1,5 +1,6 @@
 const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
   const LOCAL_STORAGE_ORDER_KEY = 'pizza_plaza_order'
+  const LOCAL_STORAGE_ORDER_SUMMARY_KEY = 'pizza_plaza_order_summary'
   Vue.createApp({
     components: { ArticleTile, ArticleTileList, OrderSummary },
     data: () => {
@@ -33,10 +34,13 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
       },
       commitOrderToLocalStorage () {
         window.localStorage.setItem(LOCAL_STORAGE_ORDER_KEY, JSON.stringify(this.order))
+        window.localStorage.setItem(LOCAL_STORAGE_ORDER_SUMMARY_KEY, JSON.stringify({
+          priceTotal: this.getOrderTotal(this.order),
+          itemsTotal: this.order.reduce((previous, next) => previous + next.quantity, 0)
+        }))
         window.dispatchEvent(new Event('vue.order.updated'))
       },
       addToCart ({ id, extras }) {
-        console.log({ extras })
         let availableArticle = this.articles.find(art => art.ID === id)
         if (!availableArticle) {
           return
@@ -72,7 +76,6 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         })
       },
       removeFromCart (index) {
-        console.log(index)
         this.order.splice(index, 1)
       },
       setCartQuantity ({ index, quantity }) {
@@ -80,13 +83,13 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         this.fixOrderData(this.order)
       },
       clearOrder (options) {
-        if(!options.noConfirm) {
+        if(typeof options === "undefined" || typeof options.noConfirm === "undefined" || !options.noConfirm) {
           if (!confirm('Möchten Sie den Bestellvorgang wirklich abbrechen?')) {
             return
           }
         }
         this.order = []
-        if (typeof options.redirect === 'string') {
+        if (typeof options !== "undefined" && typeof options.redirect === 'string') {
           window.location.href = options.redirect
         }
       },

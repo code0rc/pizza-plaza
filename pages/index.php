@@ -8,6 +8,7 @@
   <title>Pizza Plaza</title>
   <link rel="stylesheet" href="/dist/bootstrap/css/bootstrap.css">
   <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="https://unpkg.com/vue@3.0.2/dist/vue.global.js"></script>
 </head>
 <body>
 
@@ -40,6 +41,9 @@
         <li class="nav-item <?php if ($currentSite === 'imprint') echo 'active'; ?>">
           <a class="nav-link"
              href="?site=imprint"><?php echo htmlspecialchars(get_page_name($availableSites['imprint'])) ?></a>
+        </li>
+        <li class="nav-item ml-md-3" v-cloak id="vue_order_summary_widget" v-if="itemsTotal > 0">
+          <a class="nav-link" href="?site=checkout"><strong>&#x1f6d2; {{ itemsTotal }} Artikel ({{ priceTotal }}&euro;)</strong></a>
         </li>
       </ul>
     </div>
@@ -102,5 +106,28 @@ while ($parentSite) {
 <script src="/dist/popper/umd/popper.min.js"></script>
 <script src="/dist/bootstrap/js/bootstrap.min.js"></script>
 <script src="/assets/js/main.js"></script>
+<script>
+
+  Vue.createApp({
+    data: function () {
+      return {
+        itemsTotal: 0,
+        priceTotal: 0
+      }
+    },
+    methods: {
+      loadData: function() {
+        const data = JSON.parse(window.localStorage.getItem('pizza_plaza_order_summary'))
+        this.priceTotal = data.priceTotal
+        this.itemsTotal = data.itemsTotal
+      }
+    },
+    created: function() {
+      this.loadData()
+      window.addEventListener('vue.order.updated', this.loadData)
+    }
+  }).mount('#vue_order_summary_widget')
+
+</script>
 </body>
 </html>
