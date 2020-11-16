@@ -8,6 +8,13 @@ use PizzaPlaza\Utilities\MissingConfigFileException;
 define('APP_ROOT', realpath(dirname(__FILE__)));
 require_once APP_ROOT . '/vendor/autoload.php';
 
+function get_page_name($page) {
+    if(is_array($page)) {
+        return $page['name'];
+    }
+    return $page;
+}
+
 // Load config
 if(!file_exists(APP_ROOT . '/config.json')) {
     throw new MissingConfigFileException();
@@ -34,14 +41,25 @@ try {
     exit("Could not connect to database. Error: " . $e->getMessage());
 }
 
-
 // Array of all available sites.
 $availableSites = [
     "main" => "Startseite",
     "about" => "Über uns",
     "imprint" => "Impressum",
     "contact" => "Kontakt",
-    "order" => "Online-Bestellung"
+    "order" => "Online-Bestellung",
+    "checkout" => [
+        "name" => "Checkout",
+        "parent" => "order"
+    ],
+    "checkout-complete" => [
+        "name" => "Danke",
+        "parent" => "checkout"
+    ]
+];
+
+$endpoints = [
+    "process-order"
 ];
 
 // Default site value.
@@ -54,8 +72,13 @@ $paramSite = filter_input(INPUT_GET, 'site', FILTER_SANITIZE_STRING);
 // Load requested site-GET parameter
 if ($requestMethod === "GET" && !empty($paramSite) && !empty($availableSites[$paramSite])) {
     $currentSite = $_GET['site'];
-    $currentSiteTitle = $availableSites[$currentSite];
+    $currentSiteTitle = is_array($availableSites[$currentSite]) ? $availableSites[$currentSite]['name'] : $availableSites[$currentSite];
+} elseif (!empty($paramSite) && in_array($paramSite, $endpoints)) {
+    // This can safely be done because endpoints must be whitelisted in the $endpoints array
+    include APP_ROOT . '/endpoints/' . $paramSite . '.php';
 }
 
-//Load the template.
-include '../pages/index.php';
+// Use index file only for non-endpoint routes
+if(empty($paramSite) || !in_array($paramSite, $endpoints)) {
+    include '../pages/index.php';
+}

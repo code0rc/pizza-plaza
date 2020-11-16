@@ -47,7 +47,7 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         }
         let article = Array.prototype.find.call(this.order, filterSameArticle)
         if (!!article) {
-          if(article.quantity < 20) {
+          if (article.quantity < 20) {
             article.quantity++
           }
         } else {
@@ -79,11 +79,16 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         this.order[index].quantity = quantity
         this.fixOrderData(this.order)
       },
-      clearOrder () {
-        if (!confirm('Möchten Sie den Bestellvorgang wirklich abbrechen?')) {
-          return
+      clearOrder (options) {
+        if(!options.noConfirm) {
+          if (!confirm('Möchten Sie den Bestellvorgang wirklich abbrechen?')) {
+            return
+          }
         }
         this.order = []
+        if (typeof options.redirect === 'string') {
+          window.location.href = options.redirect
+        }
       },
       getArticleName (id) {
         return this.articles.find(art => art.ID === id).name
@@ -136,6 +141,37 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         } else {
           this.setCartQuantity({ index, quantity: this.order[index].quantity - 1 })
         }
+      },
+      submitOrder (form) {
+        if (this.order.length < 1) {
+          return
+        }
+
+        const formData = Object.fromEntries(new FormData(form).entries())
+        const payload = JSON.stringify({
+          customer: formData,
+          order: this.order
+        })
+
+        fetch('?site=process-order', {
+          method: 'post',
+          body: payload
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (!data.error) {
+              this.clearOrder({
+                redirect: '?site=checkout-complete',
+                noConfirm: true
+              })
+            }
+          })
+          .catch(e => {
+            alert(
+              'Beim Bestellen ist ein Fehler aufgetreten. Bitte versuche es später noch einmal ' +
+              'oder bestelle einfach per Telefon!'
+            )
+          })
       }
     },
     created () {

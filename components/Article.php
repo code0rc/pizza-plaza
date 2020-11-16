@@ -2,6 +2,7 @@
 
 namespace PizzaPlaza\Components;
 
+use Exception;
 use PDO;
 use PizzaPlaza\Utilities\DatabaseConnection;
 
@@ -85,7 +86,7 @@ SQL;
             }
         }
 
-        self::$articles = array_values($articles);
+        self::$articles = $articles;
         return self::$articles;
     }
 }

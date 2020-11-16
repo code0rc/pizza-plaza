@@ -3,8 +3,8 @@
 use PizzaPlaza\Components\Article;
 use PizzaPlaza\Components\Extra;
 
-$articles = Article::fetchAll($database);
-$extras = Extra::fetchAll($database);
+$articles = array_values(Article::fetchAll($database));
+$extras = array_values(Extra::fetchAll($database));
 $data = (object)[
     'payload' => (object)[
         'articles' => $articles,
@@ -31,7 +31,7 @@ $json = base64_encode(json_encode($data));
 
     <div class="row">
       <div class="col col-12 mb-5" v-if="order.length > 0">
-        <a class="btn btn-primary float-right ml-2" onclick="alert('Coming soon!')">Weiter zum Checkout</a>
+        <a class="btn btn-primary float-right ml-2" href="?site=checkout">Weiter zum Checkout</a>
         <a href="#" class="btn btn-outline-danger float-right" v-on:click="clearOrder()">Bestellvorgang
           abbrechen</a>
       </div>

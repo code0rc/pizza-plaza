@@ -67,7 +67,7 @@ SQL;
             );
         }
 
-        self::$extras = array_values($extras);
+        self::$extras = $extras;
         return self::$extras;
     }
 }
