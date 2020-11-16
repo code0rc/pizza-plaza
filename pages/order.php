@@ -37,10 +37,11 @@ $json = base64_encode(json_encode($data));
       </div>
     </div>
 
-    <article-tile-list :articles="articles" v-slot:default="{ID, name, description, price, extras}">
+    <article-tile-list :articles="articles" v-slot:default="{ID, name, description, price, extras, fullPrice}">
       <article-tile :id="ID" :name="name"
                     :description="description"
                     :price="price" :extras="extras"
+                    :full-price="fullPrice"
                     v-on:add_to_cart="addToCart($event)"/>
     </article-tile-list>
   </div>

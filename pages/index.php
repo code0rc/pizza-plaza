@@ -43,7 +43,7 @@
              href="?site=imprint"><?php echo htmlspecialchars(get_page_name($availableSites['imprint'])) ?></a>
         </li>
         <li class="nav-item ml-md-3" v-cloak id="vue_order_summary_widget">
-          <a v-if="itemsTotal > 0" class="nav-link" href="?site=checkout"><strong>&#x1f6d2; {{ itemsTotal }} Artikel ({{ priceTotal
+          <a v-if="itemsTotal > 0" class="nav-link" href="?site=checkout"><strong>&#x1f6d2; {{ itemsTotal }} Artikel ({{ priceTotal.toFixed(2)
               }}&euro;)</strong></a>
         </li>
       </ul>

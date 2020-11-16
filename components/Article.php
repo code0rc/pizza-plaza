@@ -34,11 +34,21 @@ class Article
     public $price;
 
     /**
+     * @var double|null
+     */
+    public $fullPrice = null;
+
+    /**
+     * @var bool
+     */
+    public $discounted = false;
+
+    /**
      * @var string[]
      */
     public $extras = [];
 
-    public function __construct(int $ID, string $name, float $price, $description = null)
+    public function __construct(int $ID, string $name, float $price, $description = null, $discountPrice = null)
     {
         $this->ID = $ID;
         $this->name = $name;
@@ -46,6 +56,10 @@ class Article
         $this->description = $description;
     }
 
+    /**
+     * @param DatabaseConnection $connection
+     * @return array|static
+     */
     public static function fetchAll(DatabaseConnection $connection)
     {
         if(!empty(self::$articles)) {
@@ -79,6 +93,12 @@ SQL;
                     $row['price'],
                     $row['description'] ?? null
                 );
+
+                if(defined('DISCOUNTED_ARTICLE_ID') && (string)DISCOUNTED_ARTICLE_ID === (string)$id) {
+                    $articles[$id]->fullPrice = $articles[$id]->price;
+                    $articles[$id]->price = round($articles[$id]->price * 0.66, 2);
+                    $articles[$id]->discounted = true;
+                }
             }
 
             if(!empty($row['extra'])) {
@@ -88,5 +108,10 @@ SQL;
 
         self::$articles = $articles;
         return self::$articles;
+    }
+
+    public static function reset()
+    {
+        self::$articles = [];
     }
 }

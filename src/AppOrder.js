@@ -1,4 +1,5 @@
 const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
+  articles.sort((a, b) => Number(b.fullPrice) - Number(a.fullPrice));
   const LOCAL_STORAGE_ORDER_KEY = 'pizza_plaza_order'
   const LOCAL_STORAGE_ORDER_SUMMARY_KEY = 'pizza_plaza_order_summary'
   Vue.createApp({

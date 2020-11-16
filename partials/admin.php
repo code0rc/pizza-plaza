@@ -4,9 +4,9 @@ use PizzaPlaza\Components\Article;
 use PizzaPlaza\Components\Extra;
 use PizzaPlaza\Components\Order;
 
-if(!empty($deleteOrderId = filter_input(INPUT_GET, 'delete', FILTER_SANITIZE_NUMBER_INT))) {
-  Order::deleteById($database, $deleteOrderId);
-  header('Location: ?site=admin');
+if (!empty($deleteOrderId = filter_input(INPUT_GET, 'delete', FILTER_SANITIZE_NUMBER_INT))) {
+    Order::deleteById($database, $deleteOrderId);
+    header('Location: ?site=admin');
 }
 
 $articles = Article::fetchAll($database);
@@ -29,10 +29,10 @@ $orders = Order::fetchAll($database, $articles, $extras);
     <h5>Alle Bestellungen</h5>
   </div>
 
-    <?php if(empty($orders)) { ?>
-        <div class="col-12">
-          <div class="alert alert-info">Keine Bestellungen vorhanden</div>
-        </div>
+    <?php if (empty($orders)) { ?>
+      <div class="col-12">
+        <div class="alert alert-info">Keine Bestellungen vorhanden</div>
+      </div>
     <?php } ?>
 
     <?php foreach ($orders as $order) { ?>
@@ -65,7 +65,9 @@ $orders = Order::fetchAll($database, $articles, $extras);
               <?php foreach ($order->orderItems as $item) { ?>
                 <li class="list-group-item bg-light text-dark"><h5>
                     <strong><?php echo htmlspecialchars($item->quantity) ?></strong>&nbsp;&times;
-                    Pizza <?php echo htmlspecialchars($item->article->name) ?><br>
+                    Pizza <?php echo htmlspecialchars($item->article->name) ?><?php if ($item->article->discounted) {
+                            echo " <span class='text-danger'>(Rabatt -33%)</span>";
+                        } ?><br>
                         <?php if (count($item->extras) > 0) { ?>
                           Extras: <span class="text-muted">
                             <?php
@@ -93,6 +95,6 @@ $orders = Order::fetchAll($database, $articles, $extras);
     <?php } ?>
 
   <script>
-    window.setInterval(function() { window.location.reload() }, 20000)
+    window.setInterval(function () { window.location.reload() }, 20000)
   </script>
 </div>

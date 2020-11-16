@@ -1,10 +1,11 @@
 const ArticleTile = {
   template: `
     <div class="card my-3 w-100">
-    <div class="card-body pb-0">
+    <div class="card-body pb-0" :class="{'alert-success': !!fullPrice}">
       <h5 class="card-title mb-3">
         Pizza {{ name }}
         <span class="badge badge-pill badge-success float-right">{{ price.toFixed(2) }} €</span>
+        <span v-if="fullPrice" class="badge badge-pill badge-danger float-right mr-2"><del>{{ fullPrice.toFixed(2) }} €</del></span>
       </h5>
       <h6 class="card-subtitle mb-2 text-muted" style="height: 3.2rem;" v-if="!!description">
         {{ description }}
@@ -51,8 +52,10 @@ const ArticleTile = {
     description: {
       type: String
     },
-    discountPrice: {
-      type: Number
+    fullPrice: {
+      type: Number,
+      required: false,
+      default: null
     }
   },
   data () {
