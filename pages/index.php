@@ -9,6 +9,51 @@
   <link rel="stylesheet" href="/dist/bootstrap/css/bootstrap.css">
   <link rel="stylesheet" href="/assets/css/main.css">
   <script src="https://unpkg.com/vue@3.0.2/dist/vue.global.js"></script>
+  <script>
+
+    // Cookie Banner
+    (function () {
+
+      var COOKIE_BANNER_DISMISSED_KEY = 'cookie_banner_dismissed'
+
+      function addCookieBannerToDom () {
+        var banner = document.getElementById('cookie-banner')
+        var bannerDismissButton = banner.querySelector('#cookie-banner-dismiss-button')
+
+        // Show banner
+        banner.style.removeProperty('display')
+
+        // Add event listener to dismiss button
+        bannerDismissButton.addEventListener('click', function () {
+          // Hide banner
+          banner.style.display = 'none'
+
+          // Update dismissal date in local storage
+          window.localStorage.setItem(COOKIE_BANNER_DISMISSED_KEY, String(new Date()))
+        })
+      }
+
+      function initCookieBanner () {
+        var data = window.localStorage.getItem(COOKIE_BANNER_DISMISSED_KEY)
+
+        // Check is banner has never been shown before before of if dismissal timestamp is invalid
+        if (data == null || isNaN(new Date(data).getTime())) {
+          return addCookieBannerToDom()
+        }
+
+        // Check if banner was shown within the last 182 days (~ a half year)
+        if (new Date().getTime() - new Date(data).getTime() > 1000 * 3600 * 24 * 182) {
+          return addCookieBannerToDom()
+        }
+      }
+
+      // Wait until page is loaded before trying to access cookie banner by ID
+      document.addEventListener('DOMContentLoaded', initCookieBanner)
+
+    })()
+
+
+  </script>
 </head>
 <body>
 
@@ -43,7 +88,8 @@
              href="?site=imprint"><?php echo htmlspecialchars(get_page_name($availableSites['imprint'])) ?></a>
         </li>
         <li class="nav-item ml-md-3" v-cloak id="vue_order_summary_widget">
-          <a v-if="itemsTotal > 0" class="nav-link" href="?site=checkout"><strong>&#x1f6d2; {{ itemsTotal }} Artikel ({{ priceTotal.toFixed(2)
+          <a v-if="itemsTotal > 0" class="nav-link" href="?site=checkout"><strong>&#x1f6d2; {{ itemsTotal }} Artikel
+              ({{ priceTotal.toFixed(2)
               }}&euro;)</strong></a>
         </li>
       </ul>
@@ -136,5 +182,16 @@ while ($parentSite) {
   }).mount('#vue_order_summary_widget')
 
 </script>
+
+<div class="container position-fixed fixed-bottom mb-4" id="cookie-banner" style="display: none">
+  <div class="row">
+    <div class="col-12 d-flex justify-content-between align-items-center alert bg-warning text-dark py-4 px-4">
+      <h6 class="mb-0">Diese Seite verwendet Cookies. Mit der fortgeführten Nutzung dieser Seite erklären Sie sich damit
+        einverstanden.</h6>
+      <a class="btn btn-sm btn-outline-danger" id="cookie-banner-dismiss-button" title="Schließen">&#x2715;</a>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
