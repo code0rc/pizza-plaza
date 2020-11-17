@@ -1,5 +1,5 @@
 const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
-  articles.sort((a, b) => Number(b.fullPrice) - Number(a.fullPrice));
+  articles.sort((a, b) => Number(b.fullPrice) - Number(a.fullPrice))
   const LOCAL_STORAGE_ORDER_KEY = 'pizza_plaza_order'
   const LOCAL_STORAGE_ORDER_SUMMARY_KEY = 'pizza_plaza_order_summary'
   Vue.createApp({
@@ -9,7 +9,8 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         initialized: false,
         articles: articles,
         extras: extras,
-        order: []
+        order: [],
+        delivery: false
       }
     },
     watch: {
@@ -17,6 +18,7 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         handler () {
           if (!this.initialized) return
           this.commitOrderToLocalStorage()
+          this.updateDeliveryEligibility()
         },
         deep: true
       }
@@ -32,6 +34,18 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
           this.commitOrderToLocalStorage()
         }
         this.initialized = true
+      },
+      updateDeliveryEligibility () {
+        if(!this.isEligibleForDelivery()) {
+          this.delivery = false;
+        }
+      },
+      isEligibleForDelivery() {
+        return this.getOrderTotal(this.order) >= 10
+      },
+      getDeliveryPrice() {
+        if(!this.delivery) return 0;
+        return this.getOrderTotal(this.order) >= 25 ? 0 : 1.5;
       },
       commitOrderToLocalStorage () {
         window.localStorage.setItem(LOCAL_STORAGE_ORDER_KEY, JSON.stringify(this.order))
@@ -84,13 +98,13 @@ const initAppOrder = ({ payload: { articles, extras } }, Vue) => {
         this.fixOrderData(this.order)
       },
       clearOrder (options) {
-        if(typeof options === "undefined" || typeof options.noConfirm === "undefined" || !options.noConfirm) {
+        if (typeof options === 'undefined' || typeof options.noConfirm === 'undefined' || !options.noConfirm) {
           if (!confirm('Möchten Sie den Bestellvorgang wirklich abbrechen?')) {
             return
           }
         }
         this.order = []
-        if (typeof options !== "undefined" && typeof options.redirect === 'string') {
+        if (typeof options !== 'undefined' && typeof options.redirect === 'string') {
           window.location.href = options.redirect
         }
       },

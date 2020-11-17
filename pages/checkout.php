@@ -26,7 +26,7 @@ $json = base64_encode(json_encode($data));
   </div>
   <div v-cloak>
     <h5 v-if="order.length > 0">Möchten Sie noch letzte Änderungen an Ihrer Bestellung vornehmen?</h5>
-    <order-summary :order="order" v-on:clear_order="clearOrder()" v-on:delete="removeFromCart($event)"
+    <order-summary :order="order" :delivery="delivery" v-on:clear_order="clearOrder()" v-on:delete="removeFromCart($event)"
                    v-on:set_quantity="setCartQuantity($event)"
                    v-on:update_extras="updateExtras($event)">
     </order-summary>
@@ -68,30 +68,30 @@ $json = base64_encode(json_encode($data));
           </div>
           <div class="form-row">
             <div class="col-8 form-group">
-              <label for="order_submit_form-street">Straße <small class="text-muted">(optional)</small></label>
+              <label for="order_submit_form-street">Straße <small class="text-muted" v-if="!delivery">(optional)</small></label>
               <input id="order_submit_form-street" type="text"
                      class="form-control" name="street"
-                     autocomplete="shipping street-address address-line1">
+                     autocomplete="shipping street-address address-line1" :required="delivery">
             </div>
             <div class="col-4 form-group">
               <label for="order_submit_form-streetnumber">Hausnummer <small
-                    class="text-muted">(optional)</small></label>
+                    class="text-muted" v-if="!delivery">(optional)</small></label>
               <input id="order_submit_form-streetnumber" type="text"
-                     class="form-control" name="streetnumber">
+                     class="form-control" name="streetnumber" :required="delivery">
             </div>
           </div>
           <div class="form-row">
             <div class="col-4 form-group">
-              <label for="order_submit_form-zip">PLZ <small class="text-muted">(optional)</small></label>
+              <label for="order_submit_form-zip">PLZ <small class="text-muted" v-if="!delivery">(optional)</small></label>
               <input id="order_submit_form-zip" type="tel"
                      class="form-control" name="zip"
-                     autocomplete="shipping postal-code">
+                     autocomplete="shipping postal-code" :required="delivery">
             </div>
             <div class="col-8 form-group">
-              <label for="order_submit_form-city">Stadt <small class="text-muted">(optional)</small></label>
+              <label for="order_submit_form-city">Stadt <small class="text-muted" v-if="!delivery">(optional)</small></label>
               <input id="order_submit_form-city" type="text"
                      class="form-control" name="city"
-                     autocomplete="address-level2">
+                     autocomplete="address-level2" :required="delivery">
             </div>
           </div>
           <div class="form-row">
@@ -104,6 +104,15 @@ $json = base64_encode(json_encode($data));
             </div>
           </div>
           <div class="form-row">
+            <div class="col-12 form-group">
+              <div class="form-check">
+                <input id="order_submit_form-delivery" class="form-check-input" :disabled="!isEligibleForDelivery()"
+                       name="accept-privacy-delivery" type="checkbox" v-model="delivery">
+                <label class="form-check-label" for="order_submit_form-delivery">
+                  Ich möchte den Lieferdienst in Anspruch nehmen (Mindestbestellwert 10&euro;, Gratis-Lieferung ab 25&euro;)
+                </label>
+              </div>
+            </div>
             <div class="col-12 form-group">
               <div class="form-check">
                 <input id="order_submit_form-accept" class="form-check-input"
@@ -119,7 +128,7 @@ $json = base64_encode(json_encode($data));
           <div class="form-row">
             <div class="col-12">
               <button class="btn btn-primary float-right" type="submit">
-                Jetzt verbindlich bestellen ({{ getOrderTotal(order).toFixed(2) }}&euro;)
+                Jetzt verbindlich bestellen ({{ (getOrderTotal(order) + getDeliveryPrice()).toFixed(2) }}&euro;)
               </button>
             </div>
           </div>
