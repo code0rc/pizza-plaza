@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `Extras` (
 CREATE TABLE IF NOT EXISTS `Order` (
     `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+    `delivery` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Boolean',
     `customer_ID` int(10) unsigned NOT NULL,
     PRIMARY KEY (`ID`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

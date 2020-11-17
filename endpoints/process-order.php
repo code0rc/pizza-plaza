@@ -7,13 +7,29 @@ use PizzaPlaza\Components\Order;
 use PizzaPlaza\Components\OrderItem;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('HTTP/1.1 Bad Request', true, 400);
-    die('Bad Request');
+    header('HTTP/1.1 400 Bad Request', false, 400);
+    exit;
 }
 
 try {
     $data = json_decode(file_get_contents('php://input'));
     $customer = new Customer($data->customer->firstname, $data->customer->lastname);
+
+    if (empty($data->customer->acceptPrivacyTermsConditions)) {
+        throw new Exception("You need to accept the privacy terms and conditions!");
+    }
+
+    if (($delivery = !empty($data->customer->delivery)) && array_reduce([
+            $data->customer->street,
+            $data->customer->streetnumber,
+            $data->customer->zip,
+            $data->customer->city
+        ], function ($current, $next) {
+            return $current || empty(trim($next));
+        }, false)) {
+        throw new Exception("All address fields must be filled out when the delivery option is checked.");
+    }
+
     if (!empty($street = $data->customer->street)) {
         $customer->street = $street;
     }
@@ -55,11 +71,17 @@ try {
     }
 
     $order = new Order($customer, $orderItems);
+
+    if($delivery && $order->getPrice() < 10) {
+        throw new Exception("Only orders with a total price of EUR 10 or more are eligible for delivery.");
+    }
+
+    $order->delivery = $delivery;
     Order::save($database, $order);
     echo json_encode((object)["error" => false]);
-    exit;
+    exit(200);
 } catch (Exception $e) {
-    header('HTTP/1.1 Bad Request', true, 400);
-    echo json_encode((object)["error" => true, "message" => "Could not process order!"]);
-    exit;
+    header('HTTP/1.1 400 Bad Request', false, 400);
+    echo json_encode((object)["error" => true, "message" => $e->getMessage()]);
+    exit(400);
 }

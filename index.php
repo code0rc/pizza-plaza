@@ -1,6 +1,8 @@
 <?php
 
 session_start();
+setlocale(LC_ALL, 'de_DE');
+date_default_timezone_set('Europe/Berlin');
 
 use PizzaPlaza\Components\Article;
 use PizzaPlaza\Utilities\BackendSettings;

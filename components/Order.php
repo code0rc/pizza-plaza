@@ -4,6 +4,7 @@
 namespace PizzaPlaza\Components;
 
 
+use DateTime;
 use PDO;
 use PizzaPlaza\Utilities\DatabaseConnection;
 
@@ -11,6 +12,7 @@ class Order
 {
     public $ID = 0;
     public $timestamp = null;
+    public $delivery = false;
     public $customer = null;
 
     /**
@@ -35,6 +37,11 @@ class Order
         foreach ($this->orderItems as $orderItem) {
             $price += $orderItem->getPrice();
         }
+
+        if($this->delivery && $price < 25) {
+            $price += 1.5;
+        }
+
         return (float)$price;
     }
 
@@ -50,7 +57,7 @@ class Order
         }
 
         $query = <<<SQL
-SELECT `o`.`ID` as 'Order_ID', `o`.`timestamp`, `c`.`firstname`, `c`.`lastname`, `c`.`street`, 
+SELECT `o`.`ID` as 'Order_ID', `o`.`delivery`, `o`.`timestamp`, `c`.`firstname`, `c`.`lastname`, `c`.`street`, 
        `c`.`streetnumber`, `c`.`zip`, `c`.`city`, `c`.`phone`, `i`.`ID` as 'OrderItems_ID', `i`.`quantity`,
        `i`.`Pizzas_ID` as 'Pizzas_ID', GROUP_CONCAT(`e`.`Extras_ID`) as 'Extras'
 FROM `Order` `o`
@@ -80,6 +87,7 @@ SQL;
                 $orders[$orderId] = new self($customer, []);
                 $orders[$orderId]->ID = $orderId;
                 $orders[$orderId]->timestamp = $row['timestamp'];
+                $orders[$orderId]->delivery = !empty($row['delivery']);
             }
 
             if (!empty($articles[$row['Pizzas_ID']])) {
@@ -156,17 +164,20 @@ SQL;
 
     /**
      * @param DatabaseConnection $db
+     * @param bool $delivery
      * @param int $customerId
      * @return int Inserted order ID
      */
-    private static function insertOrder(DatabaseConnection $db, int $customerId): int
+    private static function insertOrder(DatabaseConnection $db, bool $delivery, int $customerId): int
     {
         $query = <<<SQL
-INSERT INTO `Order` (`customer_ID`)
-VALUES (:customer_ID);
+INSERT INTO `Order` (`timestamp`, `delivery`, `customer_ID`)
+VALUES (:timestamp, :delivery, :customer_ID);
 SQL;
         $stmt = $db->prepare($query);
         $stmt->execute([
+            'delivery' => $delivery,
+            'timestamp' => (new DateTime())->format('Y-m-d H:i:s'),
             'customer_ID' => $customerId
         ]);
         return $db->lastInsertId();
@@ -221,7 +232,7 @@ SQL;
     public static function save(DatabaseConnection $db, self $order)
     {
         $customerId = self::insertCustomer($db, $order->customer);
-        $orderId = self::insertOrder($db, $customerId);
+        $orderId = self::insertOrder($db, $order->delivery, $customerId);
         foreach ($order->orderItems as $orderItem) {
             self::insertOrderItem($db, $orderItem, $orderId);
         }

@@ -84,9 +84,18 @@ $orders = Order::fetchAll($database, $articles, $extras);
               <?php } ?>
           </ul>
           <div class="card-footer d-flex justify-content-between align-items-center">
-            <h4 class="badge-pill badge-success py-2">
+            <span class="h4 badge-pill badge-success py-2">
                 <?php echo htmlspecialchars(number_format($order->getPrice(), 2)) ?> &euro;
-            </h4>
+            </span>
+              <?php if ($order->delivery && $order->getPrice() < 25) { ?>
+                <span class="h4"><span class="badge-pill badge-warning py-2">
+                  inkl. 1.50 &euro; Lieferpauschale
+                </span></span>
+              <?php } elseif ($order->delivery && $order->getPrice() >= 25) { ?>
+                <span><span class="h4 badge-pill badge-info py-2">
+                  inkl. GRATIS Lieferservice
+                </span></span>
+              <?php } ?>
             <a href="?site=admin&delete=<?php echo htmlspecialchars($order->ID) ?>"
                class="btn btn-lg btn-danger py-3 px-4"><strong>Bestellung Abschließen</strong></a>
           </div>

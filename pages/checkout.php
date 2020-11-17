@@ -107,7 +107,7 @@ $json = base64_encode(json_encode($data));
             <div class="col-12 form-group">
               <div class="form-check">
                 <input id="order_submit_form-delivery" class="form-check-input" :disabled="!isEligibleForDelivery()"
-                       name="accept-privacy-delivery" type="checkbox" v-model="delivery">
+                       name="delivery" type="checkbox" v-model="delivery">
                 <label class="form-check-label" for="order_submit_form-delivery">
                   Ich möchte den Lieferdienst in Anspruch nehmen (Mindestbestellwert 10&euro;, Gratis-Lieferung ab 25&euro;)
                 </label>
@@ -116,7 +116,7 @@ $json = base64_encode(json_encode($data));
             <div class="col-12 form-group">
               <div class="form-check">
                 <input id="order_submit_form-accept" class="form-check-input"
-                       name="accept-privacy-terms-conditions" type="checkbox" required>
+                       name="acceptPrivacyTermsConditions" type="checkbox" required>
                 <label class="form-check-label" for="order_submit_form-accept">
                   Ich stimme zu, dass meine Daten zum Zwecke der Durchführung der Bestellung gespeichert und verarbeitet
                   werden
